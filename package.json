@@ -1,0 +1,33 @@
+{
+  "name": "bienesraices_mvc",
+  "version": "1.0.0",
+  "description": "First Proyect NodeJS",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./main.js",
+    "server": "nodemon ./main.js",
+    "css": "postcss public/css/tailwind.css -o public/css/app.css"
+  },
+  "keywords": [
+    "MVC",
+    "Pug",
+    "Tailwind",
+    "MySQL",
+    "Sequelize"
+  ],
+  "author": "Benjamin Arratia Santibanez",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "nodemon": "^2.0.22",
+    "postcss": "^8.4.23",
+    "postcss-cli": "^10.1.0",
+    "tailwindcss": "^3.3.2"
+  }
+}
