@@ -4,9 +4,18 @@
 import express from 'express';
 //Al ser un Archivo creado por Nosotros se debe especificar ls Extension
 import usuarioRoutes from './routes/usuarioRoutes.js';
+import db from "./config/db.js";
 
 //Crear App (Contiene Info de Express)
 const app = express();
+
+//Conexion DB
+try {
+    await db.authenticate();
+    console.log('Conexion Correcta...');
+} catch (error) {
+    console.log(error);
+}
 
 //Habilitar Pug
 app.set( 'view engine', 'pug' ); //Param1: Que tipo de view engine se utilizara, Param2: Pug.
