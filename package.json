@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./main.js",
-    "server": "nodemon ./main.js",
+    "start": "node ./app.js",
+    "server": "nodemon ./app.js",
     "css": "postcss public/css/tailwind.css -o public/css/app.css --watch"
   },
   "keywords": [
@@ -20,9 +20,14 @@
   "author": "Benjamin Arratia Santibanez",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "csurf": "^1.11.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-validator": "^7.0.1",
     "mysql2": "^3.3.0",
+    "nodemailer": "^6.9.1",
     "pug": "^3.0.2",
     "sequelize": "^6.31.1"
   },

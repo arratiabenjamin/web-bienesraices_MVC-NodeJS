@@ -1,4 +1,5 @@
 node_modules/
+package-lock.json
 postcss.config.js
 tailwind.config.js
 .env
