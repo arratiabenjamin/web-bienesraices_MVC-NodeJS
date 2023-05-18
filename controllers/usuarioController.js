@@ -22,7 +22,9 @@ const formularioRegistro = (req, res) => {
 const registrar = async (req, res) => {
     //req.body Obtiene los datos enviados de un formulario
 
-    const { nombre, apellido, email, password } = req.body
+    //equals da error al poner entre comillas la variable y lo toma como valor, en el curso aparece con comillas
+    //Una solucion es crear variables de req.body y asignarlas al cual
+    const { nombre, apellido, email, password } = req.body;
 
     //Validacion
     await check('nombre').notEmpty().withMessage('El Nombre es Obligatorio').run(req);
@@ -48,6 +50,7 @@ const registrar = async (req, res) => {
             }
         } );
     }
+
     //Usualmente se usa "await" cuando se interactua con la DB
     const existeUsuario = await Usuario.findOne( { where: { email } } );
     
@@ -122,8 +125,39 @@ const confirmar = async (req, res) => {
 
 const formularioResetPassword = (req, res) => {
     res.render( 'auth/reset-password', {
-        pagina: 'Resetar Password'
+        pagina: 'Resetar Password',
+        csrfToken: req.csrfToken()
     } );
+}
+
+const resetPassword = async (req, res) => {
+
+    //Validacion
+    await check('email').isEmail().withMessage('El Email es Obligatorio y Debe ser Valido').run(req);
+
+    let resultado = validationResult(req);
+    // res.json(resultado);
+
+    //Realizar response si el campo esta vacio.
+    if(!resultado.isEmpty()){
+        return res.render( 'auth/reset-password', {
+            pagina: 'Resetear Password',
+            errores: resultado.array(),
+            csrfToken: req.csrfToken()
+        } );
+    }
+
+    //Buscar Usuario
+    const { email } = req.body;
+    const usuario = await Usuario.findOne( { where : {email} } );
+    if(!usuario){
+        return res.render( 'auth/reset-password', {
+            pagina: 'Resetear Password',
+            errores: [{msg : 'El email no esta Registrado'}],
+            csrfToken: req.csrfToken()
+        } );
+    }
+
 }
 
 //EJ:
@@ -146,5 +180,6 @@ export {
     formularioRegistro,
     formularioResetPassword,
     registrar,
-    confirmar
+    confirmar,
+    resetPassword
 }
