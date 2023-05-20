@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer';
 
 const emailRegistro = async (datos) => {
     const transport = nodemailer.createTransport({
@@ -28,7 +28,34 @@ const emailRegistro = async (datos) => {
     })
     
 }
+const emailResetPassword = async (datos) => {
+    const transport = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    })
+    
+    const { nombre, apellido, email, token } = datos;
+
+    //Enviar Email
+    await transport.sendMail({
+        from: 'bienesraicesNode.com',
+        to: email,
+        subject: 'Restea el Password de tu Cuenta de bienesraicesNode.com',
+        text: 'Restea el Password de tu Cuenta de bienesraicesNode.com',
+        html: `
+            <p>Hola ${nombre} ${apellido}, Cambia el Password de tu Cuenta de bienesraicesNode.com</p>
+            <p> Ve al Siguiente Enlace para Resetear tu Password: <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 3000}/auth/reset-password/${token}"> Resetear Password </a> </p>
+            <p> Si no Solicitaste este Reseteo de Password, solo Ignora este Mensaje. </p>
+        `
+    })
+    
+}
 
 export {
-    emailRegistro
+    emailRegistro,
+    emailResetPassword
 }

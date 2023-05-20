@@ -1,6 +1,6 @@
 import express from 'express';
 //Se debe importar con el mismo nombre puesto en el Export
-import {formularioLogin, formularioRegistro, formularioResetPassword, registrar, confirmar, resetPassword} from '../controllers/usuarioController.js'
+import {formularioLogin, formularioRegistro, formularioResetPassword, registrar, confirmar, resetPassword, comprobarToken, nuevoPassword} from '../controllers/usuarioController.js'
 const router = express.Router();
 
 // '/..' es la Ubicacion/Url
@@ -14,5 +14,9 @@ router.get( '/confirmar/:token',  confirmar );
 
 router.get( '/reset-password',  formularioResetPassword );
 router.post( '/reset-password', resetPassword );
+
+//Almacenar nuevo Password
+router.get('/reset-password/:token', comprobarToken);
+router.post('/reset-password/:token', nuevoPassword);
 
 export default router

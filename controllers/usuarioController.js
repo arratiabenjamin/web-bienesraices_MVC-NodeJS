@@ -1,8 +1,7 @@
 import { check, validationResult } from 'express-validator';
 import Usuario from '../models/Usuario.js'
 import { generarId } from '../helpers/tokens.js';
-import { emailRegistro } from '../helpers/emails.js';
-import csrf from 'csurf';
+import { emailRegistro, emailResetPassword } from '../helpers/emails.js';
 
 //req = request (Pedido Ej: id de una Tabla de DB) / res = response (Respuesta)
 const formularioLogin = (req, res) => {
@@ -150,6 +149,7 @@ const resetPassword = async (req, res) => {
     //Buscar Usuario
     const { email } = req.body;
     const usuario = await Usuario.findOne( { where : {email} } );
+    //Si Usuario no existe realizar Response con Error
     if(!usuario){
         return res.render( 'auth/reset-password', {
             pagina: 'Resetear Password',
@@ -157,6 +157,51 @@ const resetPassword = async (req, res) => {
             csrfToken: req.csrfToken()
         } );
     }
+
+    //Generar Token
+    usuario.token = generarId();
+    await usuario.save();
+    //Enviar Email
+    emailResetPassword( {
+        email : usuario.email,
+        nombre : usuario.nombre,
+        apellido : usuario.apellido,
+        token : usuario.token
+    } );
+    //Mostrar Mensaje de Confirmacion
+    res.render('templates/mensaje', {
+        pagina: 'Reestablece tu Password',
+        mensaje: 'Hemos Enviado un Email con Instrucciones'
+    })
+
+}
+
+//Comprobacion de Token Obtenido
+const comprobarToken = async (req, res) => {
+
+    const { token } = req.params;
+
+    //COmprobacion Existencia
+    const usuario = await Usuario.findOne( { where : {token} } );
+    if(!usuario){
+        return res.render( 'auth/confirmar-cuenta', {
+            pagina: 'Reestablece tu Password',
+            mensaje: 'Error al Validar la Informacion, Intenta Nuevamente',
+            error: true
+        } )
+    }
+
+    //Formulario para Modificar Password
+    res.render('auth/nuevo-password', {
+        pagina: 'Nuevo Password',
+        csrfToken : req.csrfToken()
+    });
+    
+}
+//Cambiar Password
+const nuevoPassword = (req, res) => {
+
+    console.log('Guardando Password');
 
 }
 
@@ -181,5 +226,7 @@ export {
     formularioResetPassword,
     registrar,
     confirmar,
-    resetPassword
+    resetPassword,
+    comprobarToken,
+    nuevoPassword
 }
