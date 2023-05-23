@@ -3,15 +3,37 @@ import bcryptjs from 'bcryptjs';
 import Usuario from '../models/Usuario.js'
 import { generarId } from '../helpers/tokens.js';
 import { emailRegistro, emailResetPassword } from '../helpers/emails.js';
+import router from '../routes/usuarioRoutes.js';
 
 //req = request (Pedido Ej: id de una Tabla de DB) / res = response (Respuesta)
+//Login
 const formularioLogin = (req, res) => {
     //Solo se pasa nombre de carpeta y archivo sin extension sin incluis views
     res.render( 'auth/login', {
-        pagina: 'Sign In'
+        pagina: 'Sign In',
+        csrfToken: req.csrfToken()
     } );
 }
+const autenticar = async (req, res) => {
+    //Validar Campos
+    await check('email').notEmpty().withMessage('El Email es Obligatorio').run(req);
+    await check('password').notEmpty().withMessage('El Password es Obligatorio').run(req);
 
+    let resultado = validationResult(req);
+    // res.json(resultado);
+
+    //Si el Resultado no esta vacio
+    if(!resultado.isEmpty()){
+        return res.render( 'auth/login', {
+            pagina: 'Iniciar Sesion',
+            errores: resultado.array(),
+            csrfToken: req.csrfToken(),
+        } );
+    }
+
+}
+
+//Registro
 const formularioRegistro = (req, res) => {
     res.render( 'auth/registro', {
         pagina: 'Sign Up',
@@ -90,7 +112,6 @@ const registrar = async (req, res) => {
     })
 
 }
-
 //Comprobacion de Cuenta
 const confirmar = async (req, res) => {
 
@@ -123,13 +144,13 @@ const confirmar = async (req, res) => {
     //next()
 }
 
+//Reseteo Password
 const formularioResetPassword = (req, res) => {
     res.render( 'auth/reset-password', {
         pagina: 'Resetar Password',
         csrfToken: req.csrfToken()
     } );
 }
-
 const resetPassword = async (req, res) => {
 
     //Validacion
@@ -176,7 +197,6 @@ const resetPassword = async (req, res) => {
     })
 
 }
-
 //Comprobacion de Token Obtenido
 const comprobarToken = async (req, res) => {
 
@@ -251,6 +271,7 @@ const nuevoPassword = async (req, res) => {
 //Export para mas de una Funcion o Metodo.
 export {
     formularioLogin,
+    autenticar,
     formularioRegistro,
     formularioResetPassword,
     registrar,
