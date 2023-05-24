@@ -24,9 +24,39 @@ const autenticar = async (req, res) => {
 
     //Si el Resultado no esta vacio
     if(!resultado.isEmpty()){
+        //Errores
         return res.render( 'auth/login', {
             pagina: 'Iniciar Sesion',
             errores: resultado.array(),
+            csrfToken: req.csrfToken(),
+        } );
+    }
+    const {email, password} = req.body;
+
+    //Comprobar Existencia de Usuario
+    const usuario = await Usuario.findOne({where: {email}});
+    if(!usuario){
+        return res.render( 'auth/login', {
+            pagina: 'Iniciar Sesion',
+            errores: [{msg: 'El usuario no existe'}],
+            csrfToken: req.csrfToken(),
+        } );
+    }
+
+    //Comprobar Confirmacion de Usuario
+    if(!usuario.confirmado){
+        return res.render( 'auth/login', {
+            pagina: 'Iniciar Sesion',
+            errores: [{msg: 'Usuario no Confirmado, Porfavor Confirmar'}],
+            csrfToken: req.csrfToken(),
+        } );
+    }
+
+    //Comprobacion Password
+    if(!usuario.verificarPassword(password)){
+        return res.render( 'auth/login', {
+            pagina: 'Iniciar Sesion',
+            errores: [{msg: 'Contraseña Incorrecta, Intente nuevamente'}],
             csrfToken: req.csrfToken(),
         } );
     }
