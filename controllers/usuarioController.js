@@ -1,7 +1,7 @@
 import { check, validationResult } from 'express-validator';
 import bcryptjs from 'bcryptjs';
 import Usuario from '../models/Usuario.js'
-import { generarId } from '../helpers/tokens.js';
+import { generarJWT, generarId } from '../helpers/tokens.js';
 import { emailRegistro, emailResetPassword } from '../helpers/emails.js';
 import router from '../routes/usuarioRoutes.js';
 
@@ -33,6 +33,7 @@ const autenticar = async (req, res) => {
     }
     const {email, password} = req.body;
 
+    //COMPROBACIONES
     //Comprobar Existencia de Usuario
     const usuario = await Usuario.findOne({where: {email}});
     if(!usuario){
@@ -42,7 +43,6 @@ const autenticar = async (req, res) => {
             csrfToken: req.csrfToken(),
         } );
     }
-
     //Comprobar Confirmacion de Usuario
     if(!usuario.confirmado){
         return res.render( 'auth/login', {
@@ -51,7 +51,6 @@ const autenticar = async (req, res) => {
             csrfToken: req.csrfToken(),
         } );
     }
-
     //Comprobacion Password
     if(!usuario.verificarPassword(password)){
         return res.render( 'auth/login', {
@@ -60,6 +59,11 @@ const autenticar = async (req, res) => {
             csrfToken: req.csrfToken(),
         } );
     }
+
+    //AUTENTICACION
+    const token = generarJWT({id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido});
+
+    console.log(token);
 
 }
 
