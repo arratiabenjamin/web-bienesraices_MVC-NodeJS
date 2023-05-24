@@ -65,6 +65,14 @@ const autenticar = async (req, res) => {
 
     console.log(token);
 
+    //Almacenar Cookie
+    return res.cookie('_token', token, {
+        //Evitar CSRF
+        httpOnly: true
+        //secure: true, //acceder a cookies en sitios seguros
+        //sameSite: true //Tambien es para Seguridad
+    }).redirect('/mis-propiedades');
+
 }
 
 //Registro
