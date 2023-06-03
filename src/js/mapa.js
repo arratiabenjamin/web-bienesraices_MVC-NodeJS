@@ -1,1 +1,0 @@
-alert('Mapa Funcionando 3.0');
