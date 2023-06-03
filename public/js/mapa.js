@@ -16,7 +16,7 @@
   \************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n(function() {\n\n    //Latitud\n    const lat = -33.45694;\n    //Longitud\n    const lng = -70.64827;\n    //Asignacion de valores\n    const mapa = L.map('mapa').setView([lat, lng ], 12);\n    \n    //Creacuin de Mapa\n    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n        attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'\n    }).addTo(mapa);\n\n\n})()\n\n//# sourceURL=webpack://bienesraices_mvc/./src/js/mapa.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n(function() {\n\n    //Latitud\n    const lat = -33.45694;\n    //Longitud\n    const lng = -70.64827;\n    //Asignacion de valores\n    const mapa = L.map('mapa').setView([lat, lng ], 12);\n    //var de Pincho\n    let marker;\n    \n    //Creacuin de Mapa\n    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n        attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'\n    }).addTo(mapa);\n\n    //Pincho\n    marker = new L.marker([lat, lng], {\n        //Mover Pincho\n        draggable: true,\n        //Reposicionar Mapa\n        autoPan: true\n    })\n    .addTo(mapa)\n\n})()\n\n//# sourceURL=webpack://bienesraices_mvc/./src/js/mapa.js?");
 
 /***/ })
 
