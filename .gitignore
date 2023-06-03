@@ -1,8 +1,9 @@
 node_modules/
+src/
+.vscode/
 package-lock.json
 postcss.config.js
 tailwind.config.js
 webpack.config.js
-.env
 bienesraices_node_mvc.sql
-.vscode/
+.env

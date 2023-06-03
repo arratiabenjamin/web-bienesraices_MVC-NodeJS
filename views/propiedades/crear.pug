@@ -1,5 +1,10 @@
 extends ../layout/index
 
+block styles
+    link(rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
+
+
+
 block contenido
     .py-10
         h1.text-4xl.my-5.font-extrabold.text-center Bienes
@@ -55,6 +60,7 @@ block contenido
                                 - let w = 1;
                                     while w < 6
                                         option(value=w) #{w++}
+                    #mapa.h-96
 
 block scripts 
     //leaflet es una alternativa gratis a google maps (hasta cierto punto)
