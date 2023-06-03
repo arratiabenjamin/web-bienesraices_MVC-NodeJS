@@ -3,7 +3,6 @@ import bcryptjs from 'bcryptjs';
 import Usuario from '../models/Usuario.js'
 import { generarJWT, generarId } from '../helpers/tokens.js';
 import { emailRegistro, emailResetPassword } from '../helpers/emails.js';
-import router from '../routes/usuarioRoutes.js';
 
 //req = request (Pedido Ej: id de una Tabla de DB) / res = response (Respuesta)
 //Login
@@ -14,6 +13,7 @@ const formularioLogin = (req, res) => {
         csrfToken: req.csrfToken()
     } );
 }
+
 const autenticar = async (req, res) => {
     //Validar Campos
     await check('email').notEmpty().withMessage('El Email es Obligatorio').run(req);
