@@ -60,7 +60,18 @@ block contenido
                                 - let w = 1;
                                     while w < 6
                                         option(value=w) #{w++}
-                    #mapa.h-96
+
+                    .border-gray-200.border-t.py-5.space-y-4
+                        h3.text-lg.leading-6.font-medium.text-gray-900 Direccion
+                        p.text-gray-600 Ubica la Propiedad en el Mapa
+                        #mapa.h-96
+
+                        div
+                            p.calle 
+                        
+                        input(type="hidden" name="calle" id="calle")
+                        input(type="hidden" name="lat" id="lat")
+                        input(type="hidden" name="lng" id="lng")
 
 block scripts 
     //leaflet es una alternativa gratis a google maps (hasta cierto punto)
