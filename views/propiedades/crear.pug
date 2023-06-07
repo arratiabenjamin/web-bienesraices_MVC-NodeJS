@@ -22,6 +22,11 @@ block contenido
                     div
                         label.block.text-sm.uppercase.text-gray-700.mb-2.font-bold(for="titulo") Titulo
                         input#titulo.w-full.px-3.py-2.border.border-gray-400.rounded-md.placeholder-gray-400(placeholder="Titulo de Propiedad, ej: Cabaña en el Bosque" type="text" name="titulo")
+
+                    //DESCRIPCION
+                    div
+                        label.block.text-sm.uppercase.text-gray-700.mb-2.font-bold(for="descripcion") Descripcion
+                        textarea#descripcion.w-full.px-3.py-2.border.border-gray-400.rounded-md.placeholder-gray-400(placeholder="Descripcion de Propiedad, ej: Linda Cabaña en el Bosque con Lujoso Piso" name="descripcion")
                     
                     //CATEGORIA y PRECIO
                     div(class="md:flex md:gap-4 space-y-4 md:space-y-0")
