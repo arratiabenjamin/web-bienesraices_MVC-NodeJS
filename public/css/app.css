@@ -560,6 +560,9 @@ video {
 .max-w-md {
   max-width: 28rem;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
 .items-center {
   align-items: center;
 }
