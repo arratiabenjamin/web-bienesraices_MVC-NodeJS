@@ -49,7 +49,8 @@ const guardar = async (req, res) => {
     //Crear Registro
     //precio:precioId - Renombramiento de Variable en Destructuring
     const { titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precio:precioId, categoria:categoriaId} = req.body;
-    
+    const { id: usuarioId} = req.usuario;
+
     try {
         const propiedadGuardada = await Propiedad.create({
             titulo,
@@ -63,8 +64,13 @@ const guardar = async (req, res) => {
             imagen: "Hola.png",
             precioId,
             categoriaId,
-            usuarioId: 1
+            usuarioId,
+            imagen: ''
         });
+
+        const { id } = propiedadGuardada;
+        res.redirect(`/propiedad/agregar-imagen/${id}`);
+
     } catch (error) {
         console.log(error);
     }
