@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { admin, crear, guardar } from "../controllers/propiedadController.js";
+import { admin, crear, guardar, agregarImagen } from "../controllers/propiedadController.js";
 import protegerRuta from "../middleware/protegerRutas.js";
 
 const router = express.Router();
@@ -21,5 +21,12 @@ router.post('/propiedades/crear',
     body('lat').notEmpty().withMessage('Debes Seleccionar una Latitud en el Mapa.'),
     guardar
 );
+router.get('/propiedades/agregar-imagen/:id',
+    protegerRuta,
+    agregarImagen
+);
+router.post('/propiedades/agregar-imagen/:id', (req, res) => {
+    console.log('Subiendo la Imagen...');
+})
 
 export default router

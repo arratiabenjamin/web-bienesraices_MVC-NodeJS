@@ -5,8 +5,7 @@ import { Categoria, Precio, Propiedad } from "../models/index.js";
 const admin = (req, res) => {
     res.render('propiedades/admin', {
         pagina: 'Mis Propiedades',
-        barra: true
-    });
+        });
 }
 const crear = async (req, res) => {
     //Consultar Modelo de Precio y Categoria
@@ -18,7 +17,6 @@ const crear = async (req, res) => {
     res.render('propiedades/crear', {
         pagina: 'Crear Propiedad',
         csrfToken: req.csrfToken(),
-        barra: true,
         categorias, //ObjectLiteral
         precios,
         datos: {}
@@ -38,7 +36,6 @@ const guardar = async (req, res) => {
         return res.render('propiedades/crear', {
             pagina: 'Crear Propiedad',
             csrfToken: req.csrfToken(),
-            barra: true,
             categorias, //ObjectLiteral
             precios,
             errores: resultado.array(),
@@ -69,15 +66,43 @@ const guardar = async (req, res) => {
         });
 
         const { id } = propiedadGuardada;
-        res.redirect(`/propiedad/agregar-imagen/${id}`);
+        res.redirect(`/propiedades/agregar-imagen/${id}`);
 
     } catch (error) {
         console.log(error);
     }
-}   
+}
+const agregarImagen = async (req, res) => {
+
+    const { id } = req.params;
+    const { id: usuarioId } = req.usuario;
+
+    //Validar Existencia de Propiedad
+    const propiedad = await Propiedad.findByPk(id);
+    if (!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    //Validar Publicacion de Propiedad
+    if (propiedad.publicado) {
+        return res.redirect('mis-propiedades');
+    }
+
+    //Validar Pertenencia de Propiedad a Usuario
+    if (propiedad.usuarioId.toString() !== usuarioId.toString()) {
+        return res.redirect('mis-propiedades');
+    }
+
+    res.render('propiedades/agregar-imagen', {
+       pagina: `Agregar Imagen: ${propiedad.titulo}`,
+       csrfToken: req.csrfToken(),
+       propiedad
+    });
+}
 
 export {
     admin,
     crear,
-    guardar
+    guardar,
+    agregarImagen
 }
