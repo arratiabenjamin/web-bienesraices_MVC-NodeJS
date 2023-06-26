@@ -12,7 +12,7 @@ import db from "./config/db.js";
 //Crear App (Contiene Info de Express)
 const app = express();
 
-//Habilitar Lecutra de Datos en Formulario.
+//Habilitar Lecutra de Datos en Formulario. (Excepto Archivos)
 app.use( express.urlencoded( {express: true} ) );
 
 //Para evitar CSRF

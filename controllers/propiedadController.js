@@ -5,7 +5,7 @@ import { Categoria, Precio, Propiedad } from "../models/index.js";
 const admin = (req, res) => {
     res.render('propiedades/admin', {
         pagina: 'Mis Propiedades',
-        });
+    });
 }
 const crear = async (req, res) => {
     //Consultar Modelo de Precio y Categoria
@@ -24,7 +24,7 @@ const crear = async (req, res) => {
 }
 
 const guardar = async (req, res) => {
-   //Validacion
+    //Validacion
     let resultado = validationResult(req);
 
     if (!resultado.isEmpty()) {
@@ -45,8 +45,8 @@ const guardar = async (req, res) => {
 
     //Crear Registro
     //precio:precioId - Renombramiento de Variable en Destructuring
-    const { titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precio:precioId, categoria:categoriaId} = req.body;
-    const { id: usuarioId} = req.usuario;
+    const { titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precio: precioId, categoria: categoriaId } = req.body;
+    const { id: usuarioId } = req.usuario;
 
     try {
         const propiedadGuardada = await Propiedad.create({
@@ -94,15 +94,46 @@ const agregarImagen = async (req, res) => {
     }
 
     res.render('propiedades/agregar-imagen', {
-       pagina: `Agregar Imagen: ${propiedad.titulo}`,
-       csrfToken: req.csrfToken(),
-       propiedad
+        pagina: `Agregar Imagen: ${propiedad.titulo}`,
+        csrfToken: req.csrfToken(),
+        propiedad
     });
+}
+const almacenarImagen = async (req, res, next) => {
+    const { id } = req.params;
+
+    //Validar Existencia de Propiedad
+    const propiedad = await Propiedad.findByPk(id);
+    if (!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+    //Validar Publicacion de Propiedad
+    if (propiedad.publicado) {
+        return res.redirect('mis-propiedades');
+    }
+    //Validar Pertenencia de Propiedad a Usuario
+    if (req.usuario.id.toString() !== propiedad.usuarioId.toString()) {
+        return res.redirect('mis-propiedades');
+    }
+
+    try {
+        // Almacenar Imagen y Publicar Propiedad
+        propiedad.imagen = req.file.filename;
+        propiedad.publicado = 1;
+
+        await propiedad.save();
+
+        next();
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export {
     admin,
     crear,
     guardar,
-    agregarImagen
+    agregarImagen,
+    almacenarImagen
 }
