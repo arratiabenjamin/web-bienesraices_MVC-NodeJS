@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios } from "../controllers/propiedadController.js";
+import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios, eliminar } from "../controllers/propiedadController.js";
 import protegerRuta from "../middleware/protegerRutas.js";
 import upload from "../middleware/subirImagen.js";
 
@@ -41,7 +41,7 @@ router.post('/propiedades/agregar-imagen/:id',
 router.get('/propiedades/editar/:id',
     protegerRuta,
     editar
-)
+);
 router.post('/propiedades/editar/:id',
     protegerRuta,
     body('titulo').notEmpty().withMessage('El Titulo del Anuncio es Obligatorio.'),
@@ -55,6 +55,12 @@ router.post('/propiedades/editar/:id',
     body('wc').isNumeric().withMessage('Debes Seleccionar la Cantidad de WC.'),
     body('lat').notEmpty().withMessage('Debes Seleccionar una Latitud en el Mapa.'),
     guardarCambios
+);
+
+//Eliminar Propiedad
+router.post('/propiedades/eliminar/:id',
+    protegerRuta,
+    eliminar
 );
 
 export default router
