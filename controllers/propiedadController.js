@@ -211,12 +211,12 @@ const guardarCambios = async (req, res) => {
     if (propiedad.usuarioId.toString() !== usuarioId.toString()) {
         return res.redirect('mis-propiedades');
     }
-    
+
     //Reescribir el Objeto
     try {
 
         const { titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precio: precioId, categoria: categoriaId } = req.body;
-        
+
         propiedad.set({
             titulo,
             descripcion,
@@ -242,27 +242,53 @@ const guardarCambios = async (req, res) => {
 
 //Eliminar
 const eliminar = async (req, res) => {
-   //Validar
-   const { id } = req.params;
-   const { id: usuarioId } = req.usuario;
+    //Validar
+    const { id } = req.params;
+    const { id: usuarioId } = req.usuario;
 
-   //Validar Existencia de Propiedad
-   const propiedad = await Propiedad.findByPk(id);
-   if (!propiedad) {
-       return res.redirect('/mis-propiedades');
-   }
-   //Validar Pertenencia de Propiedad a Usuario
-   if (propiedad.usuarioId.toString() !== usuarioId.toString()) {
-       return res.redirect('mis-propiedades');
-   }
+    //Validar Existencia de Propiedad
+    const propiedad = await Propiedad.findByPk(id);
+    if (!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+    //Validar Pertenencia de Propiedad a Usuario
+    if (propiedad.usuarioId.toString() !== usuarioId.toString()) {
+        return res.redirect('mis-propiedades');
+    }
 
-   //Eliminar Imagen
-   await unlink(`public/uploads/${propiedad.imagen}`);
+    //Eliminar Imagen
+    if (propiedad.imagen) {
+        await unlink(`public/uploads/${propiedad.imagen}`);
+    }
 
-   //Eliminar Propiedad
-   await propiedad.destroy();
-   res.redirect('/mis-propiedades');
+    //Eliminar Propiedad
+    await propiedad.destroy();
+    res.redirect('/mis-propiedades');
 
+}
+
+
+//Zona Publica
+//MostrarPropiedad
+const mostrarPropiedad = async (req, res) => {
+
+    const { id } = req.params
+
+    //Comprobar Existencia de Propiedad
+    const propiedad = await Propiedad.findByPk(id, {
+        include: [
+            { model: Categoria, as: 'categoria' },
+            { model: Precio, as: 'precio' }
+        ]
+    });
+    if (!propiedad) {
+        return res.redirect('/404');
+    }
+
+    res.render('propiedades/mostrar', {
+        pagina: propiedad.titulo,
+        propiedad
+    })
 }
 
 export {
@@ -273,5 +299,6 @@ export {
     almacenarImagen,
     editar,
     guardarCambios,
-    eliminar
+    eliminar,
+    mostrarPropiedad
 }

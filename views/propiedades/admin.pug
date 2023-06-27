@@ -21,7 +21,7 @@ block contenido
 
                                 div(class="sm:w-2/4 md:w-3/6 lg:4/6 space-y-3")
                                     //truncate: Corta el texto si en el dispositivo no queda espacio
-                                    a(href="#" class="block text-2xl font-extrabold text-indigo-600 truncate")= propiedad.titulo
+                                    a(href=`/propiedad/${propiedad.id}` class="block text-2xl font-extrabold text-indigo-600 truncate")= propiedad.titulo
 
                                     p(class="text-sm text-black font-bold")= propiedad.categoria.nombre
 
