@@ -5,22 +5,57 @@ import { Categoria, Precio, Propiedad } from "../models/index.js";
 //Pagina Principal
 const admin = async (req, res) => {
 
-    const { id } = req.usuario;
-    const propiedades = await Propiedad.findAll({
-        where: {
-            usuarioId: id
-        },
-        include: [
-            { model: Categoria, as: 'categoria' },
-            { model: Precio, as: 'precio' }
-        ]
-    });
+    //Leer QueryString
+    const { pagina : paginaActual } = req.query;
+    console.log(paginaActual);
 
-    res.render('propiedades/admin', {
-        pagina: 'Mis Propiedades',
-        csrfToken: req.csrfToken(),
-        propiedades,
-    });
+    // ^ debera iniciar con numero, [1-9] aceptar solo del 1 al 9, $ debera terminar con numero.
+    const expresion = /^[1-9]$/;
+    // test comprueba si el valor/dato cumple con las reglas o no.
+    if(!expresion.test(paginaActual)){
+        return res.redirect('/mis-propiedades?pagina=1');
+    }
+
+    try {
+
+        const { id } = req.usuario;
+
+        //Limite y Offset para el paginador
+        const limit = 3;
+        const offset = ((paginaActual * limit) - limit);
+
+        const [propiedades, total] = await Promise.all([
+            Propiedad.findAll({
+                limit,
+                offset,
+                where: {
+                    usuarioId: id
+                },
+                include: [
+                    { model: Categoria, as: 'categoria' },
+                    { model: Precio, as: 'precio' }
+                ]
+            }),
+            Propiedad.count({
+                where: {
+                    usuarioId: id
+                }
+            })
+        ]);
+    
+        res.render('propiedades/admin', {
+            pagina: 'Mis Propiedades',
+            propiedades,
+            csrfToken: req.csrfToken(),
+            paginas: Math.ceil(total / limit),
+            paginaActual: +paginaActual,
+            total,
+            offset,
+            limit
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 //Crear

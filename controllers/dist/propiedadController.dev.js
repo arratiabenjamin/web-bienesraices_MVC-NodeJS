@@ -23,14 +23,35 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 //Pagina Principal
 var admin = function admin(req, res) {
-  var id, propiedades;
+  var paginaActual, expresion, id, limit, offset, _ref, _ref2, propiedades, total;
+
   return regeneratorRuntime.async(function admin$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          id = req.usuario.id;
-          _context.next = 3;
-          return regeneratorRuntime.awrap(_index.Propiedad.findAll({
+          //Leer QueryString
+          paginaActual = req.query.pagina;
+          console.log(paginaActual); // ^ debera iniciar con numero, [1-9] aceptar solo del 1 al 9, $ debera terminar con numero.
+
+          expresion = /^[1-9]$/; // test comprueba si el valor/dato cumple con las reglas o no.
+
+          if (expresion.test(paginaActual)) {
+            _context.next = 5;
+            break;
+          }
+
+          return _context.abrupt("return", res.redirect('/mis-propiedades?pagina=1'));
+
+        case 5:
+          _context.prev = 5;
+          id = req.usuario.id; //Limite y Offset para el paginador
+
+          limit = 3;
+          offset = paginaActual * limit - limit;
+          _context.next = 11;
+          return regeneratorRuntime.awrap(Promise.all([_index.Propiedad.findAll({
+            limit: limit,
+            offset: offset,
             where: {
               usuarioId: id
             },
@@ -41,29 +62,48 @@ var admin = function admin(req, res) {
               model: _index.Precio,
               as: 'precio'
             }]
-          }));
+          }), _index.Propiedad.count({
+            where: {
+              usuarioId: id
+            }
+          })]));
 
-        case 3:
-          propiedades = _context.sent;
+        case 11:
+          _ref = _context.sent;
+          _ref2 = _slicedToArray(_ref, 2);
+          propiedades = _ref2[0];
+          total = _ref2[1];
           res.render('propiedades/admin', {
             pagina: 'Mis Propiedades',
+            propiedades: propiedades,
             csrfToken: req.csrfToken(),
-            propiedades: propiedades
+            paginas: Math.ceil(total / limit),
+            paginaActual: +paginaActual,
+            total: total,
+            offset: offset,
+            limit: limit
           });
+          _context.next = 21;
+          break;
 
-        case 5:
+        case 18:
+          _context.prev = 18;
+          _context.t0 = _context["catch"](5);
+          console.log(_context.t0);
+
+        case 21:
         case "end":
           return _context.stop();
       }
     }
-  });
+  }, null, null, [[5, 18]]);
 }; //Crear
 
 
 exports.admin = admin;
 
 var crear = function crear(req, res) {
-  var _ref, _ref2, categorias, precios;
+  var _ref3, _ref4, categorias, precios;
 
   return regeneratorRuntime.async(function crear$(_context2) {
     while (1) {
@@ -74,10 +114,10 @@ var crear = function crear(req, res) {
           _index.Categoria.findAll(), _index.Precio.findAll()]));
 
         case 2:
-          _ref = _context2.sent;
-          _ref2 = _slicedToArray(_ref, 2);
-          categorias = _ref2[0];
-          precios = _ref2[1];
+          _ref3 = _context2.sent;
+          _ref4 = _slicedToArray(_ref3, 2);
+          categorias = _ref4[0];
+          precios = _ref4[1];
           res.render('propiedades/crear', {
             pagina: 'Crear Propiedad',
             csrfToken: req.csrfToken(),
@@ -98,7 +138,7 @@ var crear = function crear(req, res) {
 exports.crear = crear;
 
 var guardar = function guardar(req, res) {
-  var resultado, _ref3, _ref4, categorias, precios, _req$body, titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precioId, categoriaId, usuarioId, propiedadGuardada, id;
+  var resultado, _ref5, _ref6, categorias, precios, _req$body, titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precioId, categoriaId, usuarioId, propiedadGuardada, id;
 
   return regeneratorRuntime.async(function guardar$(_context3) {
     while (1) {
@@ -117,10 +157,10 @@ var guardar = function guardar(req, res) {
           _index.Categoria.findAll(), _index.Precio.findAll()]));
 
         case 4:
-          _ref3 = _context3.sent;
-          _ref4 = _slicedToArray(_ref3, 2);
-          categorias = _ref4[0];
-          precios = _ref4[1];
+          _ref5 = _context3.sent;
+          _ref6 = _slicedToArray(_ref5, 2);
+          categorias = _ref6[0];
+          precios = _ref6[1];
           return _context3.abrupt("return", res.render('propiedades/crear', {
             pagina: 'Crear Propiedad',
             csrfToken: req.csrfToken(),
@@ -298,7 +338,7 @@ var almacenarImagen = function almacenarImagen(req, res, next) {
 exports.almacenarImagen = almacenarImagen;
 
 var editar = function editar(req, res) {
-  var id, usuarioId, propiedad, _ref5, _ref6, categorias, precios;
+  var id, usuarioId, propiedad, _ref7, _ref8, categorias, precios;
 
   return regeneratorRuntime.async(function editar$(_context6) {
     while (1) {
@@ -334,10 +374,10 @@ var editar = function editar(req, res) {
           _index.Categoria.findAll(), _index.Precio.findAll()]));
 
         case 11:
-          _ref5 = _context6.sent;
-          _ref6 = _slicedToArray(_ref5, 2);
-          categorias = _ref6[0];
-          precios = _ref6[1];
+          _ref7 = _context6.sent;
+          _ref8 = _slicedToArray(_ref7, 2);
+          categorias = _ref8[0];
+          precios = _ref8[1];
           res.render('propiedades/editar', {
             pagina: "Editar Propiedad: ".concat(propiedad.titulo),
             csrfToken: req.csrfToken(),
@@ -358,7 +398,7 @@ var editar = function editar(req, res) {
 exports.editar = editar;
 
 var guardarCambios = function guardarCambios(req, res) {
-  var resultado, _ref7, _ref8, categorias, precios, id, usuarioId, propiedad, _req$body2, titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precioId, categoriaId;
+  var resultado, _ref9, _ref10, categorias, precios, id, usuarioId, propiedad, _req$body2, titulo, descripcion, habitaciones, estacionamiento, wc, calle, lat, lng, precioId, categoriaId;
 
   return regeneratorRuntime.async(function guardarCambios$(_context7) {
     while (1) {
@@ -377,10 +417,10 @@ var guardarCambios = function guardarCambios(req, res) {
           _index.Categoria.findAll(), _index.Precio.findAll()]));
 
         case 4:
-          _ref7 = _context7.sent;
-          _ref8 = _slicedToArray(_ref7, 2);
-          categorias = _ref8[0];
-          precios = _ref8[1];
+          _ref9 = _context7.sent;
+          _ref10 = _slicedToArray(_ref9, 2);
+          categorias = _ref10[0];
+          precios = _ref10[1];
           return _context7.abrupt("return", res.render('propiedades/editar', {
             pagina: 'Editar Propiedad',
             csrfToken: req.csrfToken(),
