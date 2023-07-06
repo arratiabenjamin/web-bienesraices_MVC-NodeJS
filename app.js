@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 //Al ser un Archivo creado por Nosotros se debe especificar ls Extension
 import usuarioRoutes from './routes/usuarioRoutes.js';
 import propiedadesRoutes from './routes/propiedadesRoutes.js';
+import appRoutes from './routes/appRoutes.js';
+import apiRoutes from './routes/apiRoutes.js';
 import db from "./config/db.js";
 
 //Crear App (Contiene Info de Express)
@@ -39,8 +41,10 @@ app.use( express.static('public') ); //Indicar a express donde estaran los archi
 
 //Routing
 // app.get( '/', usuarioRoutes ); // get busca la ruta especifica dada
+app.use('/', appRoutes);
 app.use( '/auth', usuarioRoutes ); //use escanea todas las rutas que empiecen con el valor dado y busca la ruta exacta en el router
 app.use('/', propiedadesRoutes);
+app.use('/api', apiRoutes);
 
 //Definir Puerto y Arrancar Proyecto
 //Si existe una variable de entorno que lo asigne si no que asigne 3000.

@@ -8,3 +8,5 @@ webpack.config.js
 bienesraices_node_mvc.sql
 .env
 img/
+
+dist/
