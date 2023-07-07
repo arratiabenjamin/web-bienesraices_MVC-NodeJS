@@ -1,11 +1,15 @@
 import express from 'express';
 //Se debe importar con el mismo nombre puesto en el Export
-import {formularioLogin, autenticar, formularioRegistro, formularioResetPassword, registrar, confirmar, resetPassword, comprobarToken, nuevoPassword} from '../controllers/usuarioController.js'
+import {formularioLogin, autenticar, cerrarSesion, formularioRegistro, formularioResetPassword, registrar, confirmar, resetPassword, comprobarToken, nuevoPassword} from '../controllers/usuarioController.js'
 const router = express.Router();
 
 // '/..' es la Ubicacion/Url
 router.get( '/login',  formularioLogin );
 router.post( '/login',  autenticar );
+
+//Cerrar Sesion
+router.post('/cerrar-sesion', cerrarSesion);
+
 router.get( '/registro',  formularioRegistro );
 router.post( '/registro',  registrar );
 
