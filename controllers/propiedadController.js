@@ -304,6 +304,33 @@ const eliminar = async (req, res) => {
 
 }
 
+//Modificar Estado de Propiedad
+const cambiarEstado = async (req, res) => {
+   
+    //Validar
+    const { id } = req.params;
+    const { id: usuarioId } = req.usuario;
+
+    //Validar Existencia de Propiedad
+    const propiedad = await Propiedad.findByPk(id);
+    if (!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+    //Validar Pertenencia de Propiedad a Usuario
+    if (propiedad.usuarioId.toString() !== usuarioId.toString()) {
+        return res.redirect('mis-propiedades');
+    }
+
+    //Actualizar
+    propiedad.publicado = !propiedad.publicado; //Si es 1 pasa a 0 y viseversa.
+    await propiedad.save();
+
+    res.json({
+        resultado: true
+    })
+
+}
+
 
 //Zona Publica
 //MostrarPropiedad
@@ -318,7 +345,7 @@ const mostrarPropiedad = async (req, res) => {
             { model: Precio, as: 'precio' }
         ]
     });
-    if (!propiedad) {
+    if (!propiedad || !propiedad.publicado) {
         return res.redirect('/404');
     }
 
@@ -417,6 +444,7 @@ export {
     editar,
     guardarCambios,
     eliminar,
+    cambiarEstado,
     mostrarPropiedad,
     enviarMensaje,
     verMensajes
