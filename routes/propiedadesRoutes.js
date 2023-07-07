@@ -1,8 +1,9 @@
 import express from "express";
 import { body } from "express-validator";
-import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios, eliminar, mostrarPropiedad } from "../controllers/propiedadController.js";
+import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios, eliminar, mostrarPropiedad, enviarMensaje, verMensajes } from "../controllers/propiedadController.js";
 import protegerRuta from "../middleware/protegerRutas.js";
 import upload from "../middleware/subirImagen.js";
+import identificarUsuario from "../middleware/identificarUsuario.js";
 
 const router = express.Router();
 
@@ -63,8 +64,25 @@ router.post('/propiedades/eliminar/:id',
     eliminar
 );
 
+//Ver Mensajes Recibidos
+router.get('/mensajes/:id',
+    protegerRuta,
+    verMensajes
+)
+
 
 //Zona Publica
-router.get('/propiedad/:id', mostrarPropiedad)
+router.get('/propiedad/:id',
+    identificarUsuario,
+    mostrarPropiedad
+)
+
+
+//Almacenar Mensajes
+router.post('/propiedad/:id',
+    identificarUsuario,
+    body('mensaje').isLength({min: 15}).withMessage("EL Mensaje no puede estar Vacio o es muy Corto"),
+    enviarMensaje
+);
 
 export default router

@@ -39,6 +39,14 @@ const inicio = async (req, res) => {
         })
     ]);
 
+    //TERMINAR IMPLEMENTACION
+    //Usar header-app o header-admin segun inicio sesion o no
+    if(req.cookies._token){
+        req.usuario = true;
+    } else {
+        req.usuario = null;
+    }
+
     res.render('inicio', {
         pagina: 'Inicio',
         categorias,
@@ -46,6 +54,7 @@ const inicio = async (req, res) => {
         casas,
         departamentos,
         cabanias,
+        usuario: req.usuario,
         csrfToken: req.csrfToken()
     });
 }
